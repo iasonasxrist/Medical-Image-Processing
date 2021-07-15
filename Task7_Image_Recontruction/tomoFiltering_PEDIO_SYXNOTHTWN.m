@@ -1,0 +1,10 @@
+function []=tomoFiltering_PEDIO_SYXNOTHTWN()
+clc;close all;
+format short
+x=[12,27,0,0]
+Fh=[0.1 0.4 0.5 0.4]
+%FILTRARISMA SHMATOS STO PEDIO THS SYXNOTHTAS
+Fx=fft(x)%DFT TOY SHMATOS
+Fy=Fx.*Fh;%FILTRARISMA
+Fy
+y2F=ifft(Fy)%IDFT FILTRARISMENOY SHMATOS 

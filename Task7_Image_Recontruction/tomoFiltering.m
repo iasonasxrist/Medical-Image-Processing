@@ -1,0 +1,10 @@
+function []=tomoFiltering()
+clc;close all;
+format short
+x=[12,27,0,0]
+Fh=[0.1 0.4 0.5 0.4]
+ 
+%SXEDIASMOS FILTROY STO PEDIO TOY XWROY KAI FILTRARISMA SHMATOS
+h=ifft(Fh)%IDFT GIA METAFORA TOY FILTROY STON XWRO 
+h1=[fliplr(h(2:end)) h]%DIPLASIASMOS KAI METATOPISH N/2
+y1T=conv(x,h1,'same')%FILTRARISMA STO PEDIO TOY XWROY
