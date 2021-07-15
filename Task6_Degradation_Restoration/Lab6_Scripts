@@ -1,0 +1,547 @@
+function [] = Lab6_Scripts()
+clc;close all;
+CHOICE=10
+switch CHOICE
+    case 1
+        close all;clc;
+        x=[2,3,0,0]';%SHMA
+        Fx=fft(x); %DFT SHMATOS
+        disp('DFT SHMATOS');
+        disp(Fx)
+        Fh=[1,0.5,0.2,0.5]'; %MTF SYSTHMATOS
+        disp('MTF SYSTHMATOS');
+        disp(Fh)
+        
+        
+    case 2
+        
+        close all;clc;
+        x=[2,3,0,0]';%SHMA
+        Fx=fft(x); %DFT SHMATOS
+        disp('DFT SHMATOS');
+        disp(Fx)
+        Fh=[1,0.5,0.2,0.5]'; %MTF SYSTHMATOS
+        disp('MTF SYSTHMATOS');
+        disp(Fh)
+        
+        %
+        Fy=Fx.*Fh; % YPOBA8MISH SHMATOS STHN SYXNOTHTA
+        y=ifft(Fy);% IDFT SHMATOS
+        y
+        %
+        d=[0.068044     -0.23646     0.099011      0.02189]';%8ORYBOS d
+        yd=y+d% add noise to degraded signal in the time domain
+        disp('YPOBA8MISMENO ME MTF KAI 8ORYBO SHMA ');
+        disp(yd)
+        
+    case 3
+        % function [] = ASKHSH_YPOBA8MISH_EIKONAS()
+        clc;close all;
+        
+        %ARXIKH EIKONA
+        im=[15,22
+            28,17];
+        
+        %1. YPOBA8MISH EIKONAS ME MTF & 8ORYBO
+        Fh=[1,0.5,0.1,0.5];%1-d MTF SYSTHMATOS
+        noiseLevel=0.05 ;% %8ORYBOS
+        M=size(im,1);N=size(im,2);
+        %1.1. AY3HSH DIASTASEWN EIKONAS ME MHDENIKA GIA WRAPPING EFFECT
+        A=zeros(2*M,2*N);
+        %1.2. TOPO8ETHSH ARXIKHS EIKONAS im STHN ARXH TOY A
+        A(1:M,1:N)=im;
+        %1.3. YPOLOGISMOS 2d-MTF
+        [FH]=from1dTo2d_MTF(A,Fh);
+        %1.4. BLUR IMAGE
+        FY=fft2(A).*fftshift(FH);
+        B=((ifft2(FY)));%EIKONA  * MTF
+        %1.5 EIKONA + MTF+ PROS8ETIKOS 8ORYBOS
+        Bdegraded=addNoise(B,noiseLevel);
+        % Bdegraded=B+B*noiseLevel*rand(2*M,2*N);
+        
+        %3. EKTYPWSH APOTELESMATWN
+        fprintf('ARXIKH EIKONA\n')
+        disp(im)
+        fprintf('DIPLASIASMOS EIKONAS ME MHDENIKA\n')
+        disp(A)
+        fprintf('2-d MTF\n')
+        fprintf('%4.1f %4.1f %4.1f %4.1f \n',FH)
+        fprintf('\nEIKONA ME MTF\n')
+        disp(round(B))
+        fprintf('YPOBA8MISMENH EIKONA ME 8ORYBO %4.2f%%\n',100*noiseLevel)
+        disp(round(Bdegraded(1:M,1:N)))
+    case 4
+        %         function []=lab6ImageDegradation ()
+        clc;close all;
+        
+        A=imread('head5.bmp');
+        if (size(A,3)==3), A=rgb2gray(A);end; %METATROPH SE GRAYSCALE
+        A=double(A);
+        
+        %1.SXEDIASMOS YPOBA8MISHS EIKONAS (MTF + 8ORYBOS)
+        M=size(A,1);N=size(A,2);
+        Flength=round(sqrt(M^2+N^2));
+        %1a.KATASKEYH GAUSSIAN MTF
+        [fh]=gaussianMTF(Flength);%
+        [FH]=from1dTo2dFilter(A,fh);
+        
+        %2.IMAGE BLURRING
+        [B]=blurImage(A,FH);
+        
+        %3.PROS8ETIKOS 8ORYBOS
+        Noise=0.2; % ----- % 8ORYBOS ----
+        B=addNoise(B,Noise);
+        [B]=NormalizeMatrix(B,255);
+        
+        %4.APEIKONISH APOTELESMATWN
+        figure('units','normalized','outerposition',[0 0 1 1])%use full screen size
+        figure(1);
+        subplot(2,2,1);imshow(A,[]);xlabel('ARXIKH EIKONA');
+        subplot(2,2,2);imshow(B,[]);xlabel('YPOBA8MISMENH EIKONA ME MTF + 8ORYBO');
+        subplot(2,2,3);plot(fh);xlabel('MONOFIASTATH MTF (GAUSSIAN) ');grid on;
+        subplot(2,2,4);imshow(FH,[]);xlabel('DIDIASTATH MTF ');
+        %5. APO8HKEYSH APOTELESMATWN
+        imwrite(uint8(B),'YPOBA8MISMENH_EIKONA.bmp');%APO8HKEYSH YPOBA8MISMENHS EIKONAS
+        imwrite(uint8(A),'ARXIKH_EIKONA.bmp');%APO8HKEYSH ARXIKHS EIKONAS
+        
+        
+    case 5
+        
+        clc; close all;
+        %1.SHMA STON XRONO/XWRO
+        x=[3,9,0,0];
+        %2. YPOBA8MISH SHMATOS ME THN MTF SYSTHMATOS
+        %2.1. MTF SYSTHMATOS STIS SYXNOTHTES
+        Fh=[1,0.5,0.1,0.5];
+        %2.2 YPOBA8MISH ME MTF
+        Fx=fft(x);%FFT TOY SHMATOS
+        Fy=Fx.*Fh;%YPOBA8MISH ME MTF STO PEDIO SYXNOTHTAS
+        y=ifft(Fy); %EYRESH YPOBA8MISMENOY SHMATOS
+        %STO PEDIO TOY XWROY/XRONOY
+        %2.3. add noise
+        noiseLevel=0.00;
+        ydegraded=y+y*noiseLevel*rand(length(x));
+        
+        %2.4. EKTYPWSH YPOBA8MISMENOY SHMATOS
+        fprintf('ARXIKO SHMA:');
+        fprintf('%4.2f ',x)
+        fprintf('\nYPOBA8MISMENO SHMA: ');
+        fprintf('%4.2f ',ydegraded)
+        fprintf('\n');
+        
+        %3. APOKATASTASH SHMÁTOS ME TO ANTISTROFO FILTRO
+        Fw=1./Fh;%ORISMOS ANTISTROFOY FILTROY
+        Fydegraded=fft(ydegraded);
+        yFilt=ifft(Fydegraded.*Fw);%FILTRARISMA SHMATOS
+        
+        fprintf('ARXIKO SHMA:');
+        fprintf('%4.2f ',x)
+        
+        fprintf('\nFILTRARISMENO SHMA ME 8ORYBO %4.2f%%:',noiseLevel);
+        fprintf('  %4.2f ',yFilt)
+        fprintf('\n');
+        
+        
+        
+        
+        
+    case 6
+        %         function []=inverseFilterTest()
+        close all;clc;
+        x=[2,3,0,0]';%ARXIKO SHMA
+        Fx=fft(x); %DFT SHMATOS
+        Fh=[1,0.5,0.2,0.5]'; %MTF SYSTHMATOS
+        
+        Fy=Fx.*Fh; % YPOBA8MISH APO THN MTF
+        y=ifft(Fy);% METAFORA STON XWRO
+        %ESTW 8ORYBOS
+        d=[0.068044     -0.23646     0.099011      0.02189]';
+        disp('YPOBA8MISMENO SHMA');
+        yd=y+d% PROS8ESH 8ORYBOY STO YPOBA8MISMENO SHMA
+        Fyd=fft(yd); %DFT YPOBA8MISMENOY SHMATOS APO MTF + 8ORYBO
+        disp('ANTISTROFO FILTRO');
+        Fw=inverseFilter(Fh);
+        %SXEDIASMOS ANTISTROFOY FILTROY
+        Fyy=Fyd.*Fw; %APOKATASTASH SHMATOS STHN SYXNOTHTA
+        disp('FILTRARISMENO SHMA');
+        yy=ifft(Fyy) %METAFORA TOY FILTARISMENOY SHMATOS STON XWRO
+        STDdegraded=STDerror(x,yd)
+        STDrestored=STDerror(x,yy)
+        %--------------plot signals-------------------------------
+        plot(x,'b','LineWidth',2);hold on;plot(yd,'--r','LineWidth',2);
+        plot(yy,'k','LineWidth',2);grid on;
+        legend('original','degraded','restored');
+        
+        
+        
+        
+    case 7
+        %         function []=marixRestorationByInverseFilter()
+        clc;close all;
+        %ARXIKH EIKONA
+        im=[15,22
+            28,17];
+        
+        %1. YPOBA8MISH EIKONAS ME MTF & 8ORYBO
+        Fh=[1,0.5,0.1,0.5];%1-d MTF SYSTHMATOS
+        noiseLevel=0.05 ;% %8ORYBOS
+        M=size(im,1);N=size(im,2);
+        %1.1. AY3HSH DIASTASEWN EIKONAS ME MHDENIKA GIA WRAPPING EFFECT
+        A=zeros(2*M,2*N);
+        %1.2. TOPO8ETHSH ARXIKHS EIKONAS im STHN ARXH TOY A
+        A(1:M,1:N)=im;
+        %1.3. YPOLOGISMOS 2d-MTF
+        [FH]=from1dTo2d_MTF(A,Fh);
+        %1.4. BLUR IMAGE
+        FY=fft2(A).*fftshift(FH);
+        B=((ifft2(FY)));%EIKONA  * MTF
+        %1.5 EIKONA + MTF+ PROS8ETIKOS 8ORYBOS
+        Bdegraded=B+B*noiseLevel*rand(2*M,2*N);
+        
+        %2.APOKATASTASH EIKONAS
+        %DIPLASIASMOS Bd
+        Bd=zeros(2*M,2*N);
+        Bd(1:M,1:N)=Bdegraded(1:M,1:N);
+        Fh=[1,0.5,0.1,0.5];%1-d MTF SYSTHMATOS
+        [FH]=from1dTo2d_MTF(Bd,Fh);%2-d MTF
+        Fdy=fft2(Bd)./fftshift(FH);%***INVERSE FILTERING***
+        C=ifft2(Fdy);%EPISTROFH STO PEDIO TOY XWROY
+        
+        %3. EKTYPWSH APOTELESMATWN
+        fprintf('ARXIKH EIKONA\n')
+        disp(im)
+        fprintf('YPOBA8MISMENH EIKONA\n')
+        disp(round(Bd(1:M,1:N)))
+        fprintf('APOKATASTASH EIKONAS ME 8ORYBO %4.1f%%\n',100*noiseLevel)
+        disp(round(C(1:M,1:N)))
+        
+        %4. EYRESH S.E. META3Y ARXIKHS/YPOBA8MISMENHS/FILTRARISMENHS
+        diamARXIKH=diag(double(im));
+        diamDegraded=diag(B(1:M,1:N));
+        [SE_ARX_DEGR]=STDerror (diamARXIKH,diamDegraded);
+        diamFiltered=diag(C(1:M,1:N));
+        [SE_ARX_FILT]=STDerror (diamARXIKH,diamFiltered);
+        
+        fprintf('S.E. ARXIKHS Vs YPOBA8MISMENHS :%4.2f\n',SE_ARX_DEGR)
+        fprintf('S.E. ARXIKHS Vs FILTRARISMENHS :%4.2f\n',SE_ARX_FILT)
+        
+        D_SE=100*(SE_ARX_DEGR-SE_ARX_FILT)/SE_ARX_DEGR;
+        
+        if(SE_ARX_FILT<SE_ARX_DEGR)
+            fprintf('BELTIWSH EIKONAS KATA: %4.2f\n',D_SE);
+        else
+            fprintf('YPOBA8MISH EIKONAS KATA: %4.2f\n',D_SE);
+        end
+        
+        
+    case 8
+        %         function []=ImageRestoration_byInverseFilter()
+        clc;close all;
+        %1.FORTWMA KAI YPOBA8MISH EIKONAS
+        A=imread('head5.bmp');
+        if (size(A,3)==3), A=rgb2gray(A);end; %METATROPH SE GRAYSCALE
+        A=double(A);
+        A=NormalizeMatrix(A,255);
+        
+        %1a.SXEDIASMOS YPOBA8MISHS EIKONAS (MTF + 8ORYBOS)
+        M=size(A,1);N=size(A,2);
+        Flength=round(sqrt(M^2+N^2));
+        %1b.KATASKEYH GAUSSIAN MTF
+        [fh]=gaussianMTF(Flength);%
+        [FH]=from1dTo2dFilter(A,fh);
+        %1c.IMAGE BLURRING
+        B=filterImage(A,FH);
+        %1d.PROS8ETIKOS 8ORYBOS
+        Noise=0.05; % ----- % 8ORYBOS ----
+        Adegraded=addNoise(B,Noise);
+        Adegraded=NormalizeMatrix(Adegraded,255);
+        
+        
+        %2.SXEDIASMOS SYNARTHSHS ANTISTROFOY FILTROY (FW)
+        M=size(Adegraded,1);N=size(Adegraded,2);
+        Flength=round(sqrt(M^2+N^2));
+        [fh]=gaussianMTF(Flength);
+        [fw]=inverseFilter(fh);
+        strType=(' Inverse Filter');
+        [FW]=from1dTo2dFilter(Adegraded,fw);
+        
+        %3.APOKATASTASH EIKONAS
+        [Afilt]=filterImage(Adegraded,FW);
+        [Afilt]=NormalizeMatrix(Afilt,255);
+        
+        %4.APEIKONISH APOTELESMATAWN
+        figure('units','normalized','outerposition',[0 0 1 1])%use full screen size
+        
+        subplot(2,3,1);imshow(A,[]);title('ARXIKH EIKONA');
+        subplot(2,3,2);imshow(Adegraded,[]);
+        
+        strNoise=sprintf('%3.1f%%',Noise*100);
+        title(strcat('YPOBA8MISMENH EIKONA ME MTF + 8ORYBO:',strNoise));
+        subplot(2,3,3);imshow(Afilt,[]);title('FILTRARISMENH EIKONA');
+        subplot(2,3,4);plot(fh);title('System MTF');grid on;
+        subplot(2,3,5);plot(fw);title(strcat('FILTRO: ',strType));grid on;
+        subplot(2,3,6);imshow(FW,[]);title(strcat(' DIDIASTATO ', strType));
+        
+        diamARXIKH=diag(double(A));
+        diamDegraded=diag(Adegraded);
+        [SE_ARX_DEGR]=STDerror (diamARXIKH,diamDegraded);
+        diamFiltered=diag(Afilt);
+        [SE_ARX_FILT]=STDerror (diamARXIKH,diamFiltered);
+        [SE_ARX_DEGR]=STDerror (diamARXIKH,diamDegraded);
+        diamFiltered=diag(Afilt);
+        [SE_ARX_FILT]=STDerror (diamARXIKH,diamFiltered);
+        fprintf('S.E. ARXIKHS Vs YPOBA8MISMENHS :%4.2f\n',SE_ARX_DEGR)
+        fprintf('S.E. ARXIKHS Vs FILTRARISMENHS :%4.2f\n',SE_ARX_FILT)
+        D_SE=100*(SE_ARX_DEGR-SE_ARX_FILT)/SE_ARX_DEGR;
+        
+        if(SE_ARX_FILT<SE_ARX_DEGR)
+            fprintf('BELTIWSH EIKONAS KATA: %4.2f%%\n',D_SE);
+        else
+            fprintf('YPOBA8MISH EIKONAS KATA: %4.2f%%\n',D_SE);
+        end
+        
+        
+    case 9
+        %         function []=wienerFilterTest()
+        close all;clc;
+        
+        x=[12,15,0,0]'%ARXIKO SHMA
+        %YPOBA8MISH SHMATOS
+        Fx=fft(x) %fft ARXIKOY SHMATOS
+        Fh=[1,0.5,0.2,0.5]' %MTF SYSTHMATOS
+        Fy=Fx.*Fh % YPOBA8MISH SHMATOS ME THN MTF
+        y=ifft(Fy)% YPOLOGISMOS IDFT GIA METAFORA SHMATOS STON XWRO
+        d=[0.068044     -0.23646     0.099011      0.02189]'%8ORYBOS
+        yd=y+d% PROS8ESH 8ORYBOY STO HDH YPOBA8MISMENO SHMA APO THN MTF
+        
+        %APOKATASTASH SHMATOS
+        Fyd=fft(yd) %DFT TOY YPOBA8MISMENOY SHMATOS
+        Fw=[0.98039,  1.8519, 3.3333, 1.8519]'% wiener FILTRO
+        Fyy=Fyd.*Fw %FILTRARISMA STHN SYXNOTHTA
+        yy=ifft(Fyy) %YPOLOGISMOS IDFT GIA METAFORA FILTRARISMENOY SHMATOS STON XWRO
+        STDdegraded=STDerror(x,yd)
+        STDrestored=STDerror(x,yy)
+        %--------------plot signals-------------------------------
+        plot(x,'b','LineWidth',2);hold on;plot(yd,'--r','LineWidth',2);
+        plot(yy,'k','LineWidth',2);grid on;
+        legend('original','degraded','restored by Wiener')
+        
+        
+    case 10
+        %         function [] = MatlabDeblurringFunctions()
+        clc;close all;
+        %         https://www.mathworks.com/help/images/referencelist.html?type=function&category=image-restoration-deblurring&s_tid=CRUX_topnav
+        figure('units','normalized','outerposition',[0 0 1 1])%use full screen size
+        imageNames={'body1.bmp','body3.bmp','kidneys.bmp','head5.bmp',...
+            'brain_006.dcm','mri256.jpg','mam10a.bmp'};
+        path='..\images\';
+        imNumber=1;
+        imFile=strcat(path, imageNames{imNumber});
+        A=loadImage(imFile);
+        
+        A=double(A);
+        [A]=NormalizeMatrix(A,255);
+        %         1.SXEDIASMOS SYNARTHSHS YPOBA8MISHS EIKONAS (FH)
+        M=size(A,1);N=size(A,2);
+        Flength=round(sqrt(M^2+N^2));
+        
+        %==================================================
+        noise=0.1;% x100 for %IMAGE DEPENDENT NOISE
+        MTFfco=Flength/2;
+        %==================================================
+        
+        [fh]=gaussianMTFb(Flength,MTFfco);
+        [FH]=from1dTo2dFilter(A,fh);
+        PSF=fftshift(abs(ifft2(FH)));
+        PSF=PSF./max(PSF(:));
+        %2.YPOBA8MISH EIKONAS ME PSF + 8ORYBO
+        
+        FA=fftshift(FH).*fft2(A);
+        blurred=abs(ifft2(FA));
+        
+        
+        
+        signal_var = var(A(:));SNR=signal_var/noise;
+        blurred_noisy=addNoise(blurred,noise);
+        %         blurred_noisy=imnoise(blurred,'gaussian',0.5,noise_var);
+        subplot(2,3,5);imshow(blurred_noisy,[]);title('blurred + noisy ');
+        tic
+        %3. FILTRARISMA EIKONAS ME 3 FILTRA,
+        %   WIENER, BLIND DECONV KAI LUCY
+        
+        inverseFilter= deconvwnr(blurred_noisy,PSF);
+        [inverseFilter]=NormalizeMatrix(inverseFilter,255);
+        
+        wienerdeblurred = deconvwnr(blurred_noisy,PSF,noise);
+        [wienerdeblurred]=NormalizeMatrix(wienerdeblurred,255);
+        
+        blinddeblurred = deconvblind(blurred_noisy,PSF);
+        [blinddeblurred ]=NormalizeMatrix(blinddeblurred ,255);
+        
+        lucydeblurred = deconvlucy(blurred_noisy,PSF,[],[],SNR);
+        [lucydeblurred]=NormalizeMatrix(lucydeblurred,255);
+        
+        toc
+        
+        
+        subplot(3,3,1);imshow(A,[]);title('original image');
+        subplot(3,3,2);plot(fh,'r');grid on;title('1-d of blurring function');
+        xlabel('spatial frequencies');
+        subplot(3,3,3);imshow(FH,[]);title('2-d MTF of blurring function');
+        subplot(3,3,4);imshow(blurred,[]);title('blurred image');
+        subplot(3,3,5);imshow(blurred_noisy,[]);
+        sText=sprintf('blurred image with signal dependent noise %4.1f %%',100*noise)
+        
+        title(sText);
+        
+        subplot(3,3,6);imshow(inverseFilter,[]);title('Matlab Inverse Filter');
+        
+        subplot(3,3,7);imshow(wienerdeblurred ,[]);title('Matlab Wiener deblurred');
+        subplot(3,3,8);imshow(blinddeblurred,[]);title('Matlab Blind deconv deblurred');
+        subplot(3,3,9);imshow(lucydeblurred,[]);title('Matlab Lucy deconv deblurred');
+      
+        
+end%===============================================================
+
+%-----------------------------------------------------------------------
+%----------------------------FUNCTIONS-----------------------------------
+%-----------------------------------------------------------------------
+
+%--------------------------------------------------------------------
+function [FH]=from1dTo2d_MTF(A,fh)
+y=size(A,1);x=size(A,2);N=length(fh);
+z1=1;z2=1;
+if (rem(y,2)==0),
+    z1=0;
+end
+if (rem(x,2)==0),
+    z2=0;
+end
+FH=zeros(y,x);
+for i=0:y-1
+    for j=0:x-1
+        k=round(y/2-z1)-i;
+        m=round(x/2-z2)-j;
+        ir = round(( k^2 +m^2 )^0.5);
+        FH(i+1,j+1)=fh(ir+1);
+    end
+end
+%-----------------------------------------------------------------------
+function B=addNoise(A,Noise)
+M=size(A,1);N=size(A,2);
+for i=1:M
+    for j=1:N
+        B(i,j)=( A(i,j)+Noise*A(i,j)*rand() ) ;
+    end
+end
+
+%---------------------------------------------------------------------
+function [fh]=gaussianMTF(N)
+if(rem(N,2)==0), L=round(N/2+1);M=round((N/2)+2);
+else L=round(N/2); M=round((N/2)+1);
+end
+sigma=L/2-1;
+for k=0:L-1
+    fh(k+1)=exp( (-k^2/(2*sigma^2) ) );
+end
+% fh=gaussmf([0:L-1],[sigma 0] ); %SYNARTHSH TOY MATLAB
+for k=M-1:N-1
+    fh(k+1) = fh(N+1-k);
+end;%//i.e. mirror N/2..N-1
+fh=fh./max(fh);
+%--------------------------------------------------------------------
+function [FH]=from1dTo2dFilter(A,fh)
+y=size(A,1);x=size(A,2);N=length(fh);
+z1=1;z2=1;
+if (rem(y,2)==0),
+    z1=0;
+end
+if (rem(x,2)==0),
+    z2=0;
+end
+FH=zeros(y,x);
+for i=0:y-1
+    for j=0:x-1
+        k=round(y/2-z1)-i;
+        m=round(x/2-z2)-j;
+        ir = round(( k^2 +m^2 )^0.5);
+        FH(i+1,j+1)=fh(ir+1);
+    end
+end
+%------------------------------------------------------------------------
+function [y]=blurImage(A,FH)
+FA=fft2(A);
+FY=(FA).*fftshift(FH);
+y=(real(ifft2(FY)));
+%==================================================
+function [B] =NormalizeMatrix(A,maxVal)
+M=size(A,1);N=size(A,2);
+minA=min(min(A));maxA=max(max(A));
+for i=1:M
+    for j=1:N
+        B(i,j)=maxVal*((A(i,j)-minA)/(maxA-minA));
+    end
+end
+%------------------------------------------------
+function [Fw]=inverseFilter(Fh)
+C=0.0001;
+for i=1:length(Fh)
+    if(Fh(i)<C), Fh(i)=C;
+    end
+end
+Fw=1./Fh;%ORISMOS ANTISTROFOY FILTROY
+
+
+%----------------------------------------------------
+function [stErr]=STDerror (x,y)
+stErr=0;
+for i=1:length(x)
+    stErr=stErr+(x(i)-y(i))^2;
+end
+stErr=sqrt(stErr)/length(x);
+%---------------------------------------------------
+function [y]=filterImage(A,FH)
+FA=fft2(A);
+FY=(FA).*fftshift(FH);
+y=(real(ifft2(FY)));
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%==================FUNCTIONS=====================
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%---------------------------------------------------------------------
+function [fh]=gaussianMTFb(N,sigma)
+if(rem(N,2)==0), L=round(N/2+1);M=round((N/2)+2);
+else L=round(N/2); M=round((N/2)+1);
+end
+
+for k=0:L-1
+    fh(k+1)=exp( (-k^2/(2*sigma^2) ) );
+end
+% fh=gaussmf([0:L-1],[sigma 0] ); %SYNARTHSH TOY NMATLAB
+for k=M-1:N-1
+    fh(k+1) = fh(N+1-k);
+end;%//i.e. mirror N/2..N-1
+fh=fh./max(fh);
+
+
+
+
+
+
+%------------------------------------------
+function [im]=loadImage(imName)
+if(imName(end-1:end) == 'cm')
+    im = dicomread(imName);
+else
+    im = imread(imName);
+end
+if (size(im,3)>1)
+    im=rgb2gray(im);
+else
+    im=im;
+end
+
