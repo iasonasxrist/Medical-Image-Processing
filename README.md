@@ -1,4 +1,5 @@
 # MedicalImageProcessing
+
 ![Uploading image.png…]()
 
 
@@ -7,3 +8,8 @@ Medical imaging is the technique and process of imaging the interior of a body f
 As a discipline and in its widest sense, it is part of biological imaging and incorporates radiology, which uses the imaging technologies of X-ray radiography, magnetic resonance imaging, ultrasound, endoscopy, elastography, tactile imaging, thermography, medical photography, nuclear medicine functional imaging techniques as positron emission tomography (PET) and single-photon emission computed tomography (SPECT).
 
 Measurement and recording techniques that are not primarily designed to produce images, such as electroencephalography (EEG), magnetoencephalography (MEG), electrocardiography (ECG), and others, represent other technologies that produce data susceptible to representation as a parameter graph vs. time or maps that contain data about the measurement locations. In a limited comparison, these technologies can be considered forms of medical imaging in another discipline.
+
+
+In the clinical context, "invisible light" medical imaging is generally equated to radiology or "clinical imaging" and the medical practitioner responsible for interpreting (and sometimes acquiring) the images is a radiologist. "Visible light" medical imaging involves digital video or still pictures that can be seen without special equipment. Dermatology and wound care are two modalities that use visible light imagery. Diagnostic radiography designates the technical aspects of medical imaging and in particular the acquisition of medical images. The radiographer or radiologic technologist is usually responsible for acquiring medical images of diagnostic quality, although some radiological interventions are performed by radiologists.
+
+As a field of scientific investigation, medical imaging constitutes a sub-discipline of biomedical engineering, medical physics or medicine depending on the context: Research and development in the area of instrumentation, image acquisition (e.g., radiography), modeling and quantification are usually the preserve of biomedical engineering, medical physics, and computer science; Research into the application and interpretation of medical images is usually the preserve of radiology and the medical sub-discipline relevant to medical condition or area of medical science (neuroscience, cardiology, psychiatry, psychology, etc.) under investigation. Many of the techniques developed for medical imaging also have scientific and industrial applications
